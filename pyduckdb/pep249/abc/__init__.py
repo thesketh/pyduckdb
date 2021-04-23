@@ -1,5 +1,5 @@
 """
-Abstract implementations of PEP-249.
+Abstract implementations of PEP 249.
 
 """
 from .connection import Connection

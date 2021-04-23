@@ -4,7 +4,7 @@
 
 Python wrapper for DuckDB to add type hinting and more closely mirror SQLite.
 
-Currently provides a (mostly) [PEP-249](https://www.python.org/dev/peps/pep-0249/) compliant implementation of a
+Currently provides a (mostly) [PEP 249](https://www.python.org/dev/peps/pep-0249/) compliant implementation of a
 `Connection` and `Cursor`.
 
 Differences from the PEP:

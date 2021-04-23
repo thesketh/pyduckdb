@@ -1,5 +1,5 @@
 """
-Type constructors as specified by PEP-249.
+Type constructors as specified by PEP 249.
 
 """
 import datetime as dt

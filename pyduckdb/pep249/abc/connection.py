@@ -1,5 +1,5 @@
 """
-An abstract database connection implementation, conformant with PEP-249.
+An abstract database connection implementation, conformant with PEP 249.
 
 """
 # pylint: disable=bad-continuation
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 class Connection(TransactionContextMixin, metaclass=ABCMeta):
-    """A PEP-249 compliant Connection protocol."""
+    """A PEP 249 compliant Connection protocol."""
 
     @abstractmethod
     def cursor(self) -> "Cursor":

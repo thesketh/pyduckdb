@@ -1,5 +1,5 @@
 """
-Transaction support (and non-support!) for PEP-249 compliant database
+Transaction support (and non-support!) for PEP 249 compliant database
 API implementations.
 
 These abstract mixin classes provide a context manager with
@@ -17,7 +17,7 @@ TransactionMixinType = TypeVar(
 # pylint: disable=too-few-public-methods
 class TransactionFreeContextMixin(metaclass=ABCMeta):
     """
-    A PEP-249 compliant 'transaction' protocol which does not implement
+    A PEP 249 compliant 'transaction' protocol which does not implement
     transactions. In the standard, this protocol would be implemented by a
     database Cursor.
 
@@ -63,7 +63,7 @@ class TransactionFreeContextMixin(metaclass=ABCMeta):
 
 class TransactionContextMixin(TransactionFreeContextMixin, metaclass=ABCMeta):
     """
-    A PEP-249 compliant transaction protocol which implements implicitly-
+    A PEP 249 compliant transaction protocol which implements implicitly-
     started transactions. In the standard, this protocol would be
     implemented by a database connection.
 
@@ -126,7 +126,7 @@ class TransactionContextMixin(TransactionFreeContextMixin, metaclass=ABCMeta):
 
 class DummyTransactionContextMixin(TransactionContextMixin, metaclass=ABCMeta):
     """
-    A PEP-249 compliant 'transaction' protocol which does not implement
+    A PEP 249 compliant 'transaction' protocol which does not implement
     transactions, but pretends to. `commit` and `rollback` are both no-op
     functions. In the standard, this protocol would be implemented by a
     database connection without transaction support.

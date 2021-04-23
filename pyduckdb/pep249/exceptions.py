@@ -1,5 +1,5 @@
 """
-This module covers the exceptions outlined in PEP-249.
+This module covers the exceptions outlined in PEP 249.
 
 """
 
@@ -18,12 +18,12 @@ __all__ = [
 
 
 class Error(BaseException):
-    """Base error outlined in PEP-249."""
+    """Base error outlined in PEP 249."""
 
 
 class InterfaceError(Error):
     """
-    Interface error outlined in PEP-249.
+    Interface error outlined in PEP 249.
 
     Raised for errors with the database interface.
 
@@ -32,7 +32,7 @@ class InterfaceError(Error):
 
 class DatabaseError(Error):
     """
-    Database error outlined in PEP-249.
+    Database error outlined in PEP 249.
 
     Raised for errors with the database.
 
@@ -41,7 +41,7 @@ class DatabaseError(Error):
 
 class DataError(DatabaseError):
     """
-    Data error outlined in PEP-249.
+    Data error outlined in PEP 249.
 
     Raised for errors that are due to problems with processed data.
 
@@ -50,7 +50,7 @@ class DataError(DatabaseError):
 
 class OperationalError(DatabaseError):
     """
-    Operational error outlined in PEP-249.
+    Operational error outlined in PEP 249.
 
     Raised for errors in the database's operation.
 
@@ -59,7 +59,7 @@ class OperationalError(DatabaseError):
 
 class IntegrityError(DatabaseError):
     """
-    Integrity error outlined in PEP-249.
+    Integrity error outlined in PEP 249.
 
     Raised when errors occur which affect the relational integrity of
     the database.
@@ -69,7 +69,7 @@ class IntegrityError(DatabaseError):
 
 class InternalError(DatabaseError):
     """
-    Integrity error outlined in PEP-249.
+    Integrity error outlined in PEP 249.
 
     Raised when the database encounters an internal error.
 
@@ -78,7 +78,7 @@ class InternalError(DatabaseError):
 
 class ProgrammingError(DatabaseError):
     """
-    Programming error outlined in PEP-249.
+    Programming error outlined in PEP 249.
 
     Raised for SQL programming errors.
 
@@ -87,7 +87,7 @@ class ProgrammingError(DatabaseError):
 
 class NotSupportedError(DatabaseError):
     """
-    Not supported error outlined in PEP-249.
+    Not supported error outlined in PEP 249.
 
     Raised when an unsupported operation is attempted.
 

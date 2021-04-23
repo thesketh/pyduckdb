@@ -1,5 +1,5 @@
 """
-This module covers the exceptions outlined in PEP-249.
+This module covers the exceptions outlined in PEP 249.
 
 It also includes a function to convert DuckDB's pybind11-generated
 RuntimeErrors to true exception types, and a decorator to do this

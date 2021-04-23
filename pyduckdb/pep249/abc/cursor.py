@@ -1,5 +1,5 @@
 """
-An abstract database cursor implementation, conformant with PEP-249.
+An abstract database cursor implementation, conformant with PEP 249.
 
 Because it is common for database connections to implement the execute
 functionality of the cursor, returning a cursor containing the results,
@@ -26,7 +26,7 @@ from .transactions import TransactionFreeContextMixin
 
 
 class CursorExecuteMixin(metaclass=ABCMeta):
-    """The execute portions of a PEP-249 compliant Cursor protocol."""
+    """The execute portions of a PEP 249 compliant Cursor protocol."""
 
     @abstractmethod
     def execute(
@@ -102,7 +102,7 @@ class CursorSetSizeMixin(metaclass=ABCMeta):
 
 
 class CursorFetchMixin(metaclass=ABCMeta):
-    """The fetch portions of a PEP-249 compliant Cursor protocol."""
+    """The fetch portions of a PEP 249 compliant Cursor protocol."""
 
     @property
     @abstractmethod
@@ -201,4 +201,4 @@ class Cursor(
     CursorFetchMixin,
     metaclass=ABCMeta,
 ):
-    """A PEP-249 compliant Cursor protocol."""
+    """A PEP 249 compliant Cursor protocol."""

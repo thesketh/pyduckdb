@@ -1,5 +1,5 @@
 """
-Sanctioned extensions to the DB-API 2.0, as outlined in PEP-249.
+Sanctioned extensions to the DB-API 2.0, as outlined in PEP 249.
 
 https://www.python.org/dev/peps/pep-0249/#optional-db-api-extensions
 
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 class ConnectionErrorsMixin(metaclass=ABCMeta):
     # pylint: disable=too-few-public-methods,invalid-name,missing-function-docstring
     """
-    An optional extension to PEP-249, providing access to mandated
+    An optional extension to PEP 249, providing access to mandated
     exception types as members of the Connection class.
 
     """
@@ -70,7 +70,7 @@ class ConnectionErrorsMixin(metaclass=ABCMeta):
 # pylint: disable=too-few-public-methods
 class CursorConnectionMixin(metaclass=ABCMeta):
     """
-    An optional extension of PEP-249 which attaches a read only
+    An optional extension of PEP 249 which attaches a read only
     reference to the Connection object the cursor was created from.
 
     """
@@ -83,7 +83,7 @@ class CursorConnectionMixin(metaclass=ABCMeta):
 
 class IterableCursorMixin:
     """
-    An naive implementation of an optional extension to PEP-249 which
+    An naive implementation of an optional extension to PEP 249 which
     turns the cursor into an iterator.
 
     """

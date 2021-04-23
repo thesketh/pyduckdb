@@ -38,7 +38,7 @@ __all__ = ["Connection"]
 class Connection(ConnectionErrorsMixin, AbstractConnection, CursorExecuteMixin):
     """
     A DB API 2.0 compliant connection for DuckDB, as outlined in
-    PEP-249.
+    PEP 249.
 
     Can be constructed by passing a database string or a
     DuckDBPyConnection.
