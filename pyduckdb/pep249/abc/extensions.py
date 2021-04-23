@@ -6,7 +6,8 @@ https://www.python.org/dev/peps/pep-0249/#optional-db-api-extensions
 """
 # pylint: disable=bad-continuation
 from abc import abstractmethod, ABCMeta
-from typing import Type, TYPE_CHECKING
+from typing import Iterator, Optional, Type, TYPE_CHECKING
+from .types import ResultRow
 
 if TYPE_CHECKING:
     from .connection import Connection
@@ -78,3 +79,17 @@ class CursorConnectionMixin(metaclass=ABCMeta):
     def connection(self) -> "Connection":
         """The parent Connection of the implementing cursor."""
         raise NotImplementedError
+
+
+class IterableCursorMixin:
+    """
+    An naive implementation of an optional extension to PEP-249 which
+    turns the cursor into an iterator.
+
+    """
+
+    def __next__(self) -> Optional[ResultRow]:
+        return self.fetchone()
+
+    def __iter__(self) -> Iterator[ResultRow]:
+        return iter(lambda: next(self), None)

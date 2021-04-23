@@ -4,7 +4,11 @@ Abstract implementations of PEP-249.
 """
 from .connection import Connection
 from .cursor import Cursor, CursorExecuteMixin, CursorFetchMixin
-from .extensions import ConnectionErrorsMixin, CursorConnectionMixin
+from .extensions import (
+    ConnectionErrorsMixin,
+    CursorConnectionMixin,
+    IterableCursorMixin,
+)
 from .transactions import (
     TransactionFreeContextMixin,
     TransactionContextMixin,
@@ -18,6 +22,7 @@ __all__ = [
     "CursorFetchMixin",
     "ConnectionErrorsMixin",
     "CursorConnectionMixin",
+    "IterableCursorMixin",
     "TransactionFreeContextMixin",
     "TransactionContextMixin",
     "DummyTransactionContextMixin",

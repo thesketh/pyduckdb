@@ -18,11 +18,39 @@ from pyduckdb.core import (
     OperationalError,
     ProgrammingError,
 )
+from pyduckdb.type_constructors import (
+    Date,
+    Time,
+    Timestamp,
+    DateFromTicks,
+    TimeFromTicks,
+    TimestampFromTicks,
+    Binary,
+    STRING,
+    BINARY,
+    NUMBER,
+    DATETIME,
+    ROWID,
+)
 
 __all__ = [
+    "apilevel",
+    "threadsafety",
     "Connection",
     "Cursor",
     "connect",
+    "Binary",
+    "STRING",
+    "BINARY",
+    "NUMBER",
+    "DATETIME",
+    "ROWID",
+    "Date",
+    "Time",
+    "Timestamp",
+    "DateFromTicks",
+    "TimeFromTicks",
+    "TimestampFromTicks",
     "Error",
     "InterfaceError",
     "DatabaseError",
@@ -33,6 +61,11 @@ __all__ = [
     "OperationalError",
     "ProgrammingError",
 ]
+
+# pylint: disable=invalid-name
+apilevel = "2.0"
+threadsafety = 1
+paramstyle = "qmark"
 
 
 def connect(connection_string: str = ":memory:", read_only=False) -> Connection:

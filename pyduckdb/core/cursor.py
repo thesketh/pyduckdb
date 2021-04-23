@@ -9,6 +9,7 @@ from duckdb import DuckDBPyConnection  # pylint: disable=no-name-in-module
 from pyduckdb.pep249.abc import (
     Cursor as AbstractCursor,
     CursorConnectionMixin,
+    IterableCursorMixin,
     TransactionContextMixin,
 )
 from pyduckdb.pep249.abc.types import (
@@ -35,7 +36,9 @@ __all__ = ["Cursor"]
 
 
 # pylint: disable=too-many-ancestors
-class Cursor(AbstractCursor, TransactionContextMixin, CursorConnectionMixin):
+class Cursor(
+    AbstractCursor, TransactionContextMixin, CursorConnectionMixin, IterableCursorMixin
+):
     """A database cursor."""
 
     def __init__(self, connection: "Connection", duckdb_cursor: DuckDBPyConnection):
@@ -123,6 +126,10 @@ class Cursor(AbstractCursor, TransactionContextMixin, CursorConnectionMixin):
         else:
             self._cursor.execute(operation, parameters)
         return self
+
+    def executescript(self, script: SQLQuery):
+        """A lazy implementation of SQLite's `executescript`."""
+        return self.execute(script)
 
     @convert_runtime_errors
     def executemany(
