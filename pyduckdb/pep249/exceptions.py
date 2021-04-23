@@ -30,12 +30,11 @@ class InterfaceError(Error):
     """
 
 
-class DatabaseError(Error, RuntimeError):
+class DatabaseError(Error):
     """
     Database error outlined in PEP-249.
 
-    Raised for errors with the database. This error is also a subclass
-    of RuntimeError for consistency with DuckDB's Python wrapper.
+    Raised for errors with the database.
 
     """
 
