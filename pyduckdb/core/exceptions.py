@@ -8,9 +8,36 @@ implicitly by wrapping functions.
 """
 # pylint: disable=missing-class-docstring
 from functools import wraps
-from typing import Callable, TypeVar
-from pyduckdb.pep249 import exceptions
+from typing import Callable
+from pep249 import (
+    DatabaseError,
+    DataError,
+    Error,
+    InterfaceError,
+    IntegrityError,
+    InternalError,
+    NotSupportedError,
+    OperationalError,
+    ProgrammingError,
+)
+from .types import ReturnType
 
+
+__all__ = [
+    "DatabaseError",
+    "DataError",
+    "Error",
+    "InterfaceError",
+    "IntegrityError",
+    "InternalError",
+    "NotSupportedError",
+    "OperationalError",
+    "ProgrammingError",
+    "CONNECTION_CLOSED",
+    "convert_runtime_errors",
+]
+
+CONNECTION_CLOSED = ProgrammingError("Cannot operate on a closed connection.")
 
 INTEGRITY_ERRORS = ("Constraint Error",)
 PROGRAMMING_ERRORS = (
@@ -25,73 +52,17 @@ OPERATIONAL_ERRORS = ()
 NOT_SUPPORTED_ERRORS = ()
 
 
-__all__ = [
-    "DatabaseError",
-    "DataError",
-    "Error",
-    "InterfaceError",
-    "IntegrityError",
-    "InternalError",
-    "NotSupportedError",
-    "OperationalError",
-    "ProgrammingError",
-    "CONNECTION_CLOSED",
-    "parse_runtime_error",
-    "convert_runtime_errors",
-]
-
-
-class Error(exceptions.Error):
-    pass
-
-
-class InterfaceError(exceptions.InterfaceError):
-    pass
-
-
-class DatabaseError(exceptions.DatabaseError, RuntimeError):
-    pass
-
-
-class DataError(exceptions.DataError):
-    pass
-
-
-class OperationalError(exceptions.OperationalError):
-    pass
-
-
-class IntegrityError(exceptions.IntegrityError):
-    pass
-
-
-class InternalError(exceptions.InternalError):
-    pass
-
-
-class ProgrammingError(exceptions.ProgrammingError):
-    pass
-
-
-# pylint: disable=too-many-ancestors
-class NotSupportedError(exceptions.NotSupportedError, NotImplementedError):
-    pass
-
-
-CONNECTION_CLOSED = ProgrammingError("Cannot operate on a closed connection.")
-
-
-def parse_runtime_error(error: RuntimeError) -> DatabaseError:
+def _parse_runtime_error(error: RuntimeError) -> DatabaseError:
     """
     Parse a runtime error straight from DuckDB and return a more
     appropriate exception.
 
     """
-    if not isinstance(error, RuntimeError):
+    if isinstance(error, Error) or not isinstance(error, RuntimeError):
         return error
     error_string = str(error)
     error_type, *error_components = error_string.split(":")
-    error_message = ":".join(error_components).lstrip()
+    error_message = ":".join(error_components).strip()
 
     if error_type == "connection closed":
         return CONNECTION_CLOSED
@@ -117,9 +88,6 @@ def parse_runtime_error(error: RuntimeError) -> DatabaseError:
     return new_error_type(error_message)
 
 
-ReturnType = TypeVar("ReturnType")
-
-
 def convert_runtime_errors(
     function: Callable[..., ReturnType]
 ) -> Callable[..., ReturnType]:
@@ -130,6 +98,6 @@ def convert_runtime_errors(
         try:
             return function(*args, **kwargs)
         except RuntimeError as err:
-            raise parse_runtime_error(err) from err
+            raise _parse_runtime_error(err) from err
 
     return wrapper

@@ -5,40 +5,16 @@ This API is intended to eventually be a drop-in replacement for SQLite
 in most cases.
 
 """
-from pyduckdb.core import (
-    Connection,
-    Cursor,
-    Error,
-    InterfaceError,
-    DatabaseError,
-    DataError,
-    IntegrityError,
-    InternalError,
-    NotSupportedError,
-    OperationalError,
-    ProgrammingError,
-)
-from pyduckdb.type_constructors import (
-    Date,
-    Time,
-    Timestamp,
-    DateFromTicks,
-    TimeFromTicks,
-    TimestampFromTicks,
-    Binary,
-    STRING,
-    BINARY,
-    NUMBER,
-    DATETIME,
-    ROWID,
-)
+from pep249.type_constructors import *
+from pyduckdb.core import *
 
 __all__ = [
     "apilevel",
     "threadsafety",
+    "paramstyle",
+    "connect",
     "Connection",
     "Cursor",
-    "connect",
     "Binary",
     "STRING",
     "BINARY",
@@ -61,6 +37,8 @@ __all__ = [
     "OperationalError",
     "ProgrammingError",
 ]
+
+__version__ = "0.0.1b1"
 
 # pylint: disable=invalid-name
 apilevel = "2.0"

@@ -6,36 +6,24 @@ Connection object for DuckDB which fits the DB API spec.
 from typing import Optional, Sequence, Union
 import duckdb
 from duckdb import DuckDBPyConnection  # pylint: disable=no-name-in-module
-from pyduckdb.pep249.abc import (
-    ConnectionErrorsMixin,
-    Connection as AbstractConnection,
-    CursorExecuteMixin,
-)
-from pyduckdb.pep249.abc.types import (
+import pep249
+from pep249 import (
     SQLQuery,
     QueryParameters,
     ProcName,
     ProcArgs,
 )
-from pyduckdb.core.cursor import Cursor
-from pyduckdb.core.exceptions import (
-    Error,
-    InterfaceError,
-    DatabaseError,
-    DataError,
-    OperationalError,
-    IntegrityError,
-    InternalError,
-    ProgrammingError,
-    NotSupportedError,
-    CONNECTION_CLOSED,
-    parse_runtime_error,
-)
+from .cursor import Cursor
+from .exceptions import InterfaceError, ProgrammingError, convert_runtime_errors
+from .utils import raise_if_closed
 
 __all__ = ["Connection"]
 
 
-class Connection(ConnectionErrorsMixin, AbstractConnection, CursorExecuteMixin):
+# pylint: disable=too-many-ancestors
+class Connection(
+    pep249.CursorExecuteMixin, pep249.ConcreteErrorMixin, pep249.Connection
+):
     """
     A DB API 2.0 compliant connection for DuckDB, as outlined in
     PEP 249.
@@ -48,16 +36,6 @@ class Connection(ConnectionErrorsMixin, AbstractConnection, CursorExecuteMixin):
     otherwise.
 
     """
-
-    Error = Error
-    InterfaceError = InterfaceError
-    DatabaseError = DatabaseError
-    DataError = DataError
-    OperationalError = OperationalError
-    IntegrityError = IntegrityError
-    InternalError = InternalError
-    ProgrammingError = ProgrammingError
-    NotSupportedError = NotSupportedError
 
     def __init__(
         self,
@@ -75,53 +53,55 @@ class Connection(ConnectionErrorsMixin, AbstractConnection, CursorExecuteMixin):
             self._connection = duckdb.connect(database, bool(read_only))
         self._closed = False
 
+    @raise_if_closed
+    @convert_runtime_errors
+    def commit(self) -> None:
+        self._connection.commit()
+
+    @raise_if_closed
+    @convert_runtime_errors
+    def rollback(self) -> None:
+        self._connection.rollback()
+
+    @convert_runtime_errors
     def close(self) -> None:
         """Close the database connection."""
         if self._closed:
             return
-        self.rollback()
-        self._connection.close()
+
+        try:
+            # Rolling back unstaged commits.
+            try:
+                self.rollback()
+            except ProgrammingError as err:
+                if not str(err).endswith("no transaction is active"):
+                    raise
+            # Close the underlying DuckDB connection.
+            self._connection.close()
+        except ImportError:  # Underlying connection garbage collected.
+            pass
         self._closed = True
 
-    def commit(self) -> None:
-        if self._closed:
-            raise CONNECTION_CLOSED
-        self._connection.commit()
-
-    def rollback(self) -> None:
-        if self._closed:
-            raise CONNECTION_CLOSED
-        try:
-            self._connection.rollback()
-        except RuntimeError as err:
-            # Ignore this - no open transaction to roll back.
-            if str(err).startswith("TransactionContext Error:"):
-                return
-            raise parse_runtime_error(err) from err
-
+    @raise_if_closed
+    @convert_runtime_errors
     def cursor(self) -> Cursor:
-        if self._closed:
-            raise CONNECTION_CLOSED
-        try:
-            return Cursor(self, self._connection.cursor())
-        except RuntimeError as err:
-            raise parse_runtime_error(err) from err
+        return Cursor(self, self._connection.cursor())
 
     def callproc(
         self, procname: ProcName, parameters: Optional[ProcArgs] = None
     ) -> Optional[ProcArgs]:
-        return self.cursor().execute(procname, parameters)
+        return self.cursor().callproc(procname, parameters)
 
     def execute(
         self, operation: SQLQuery, parameters: Optional[QueryParameters] = None
     ) -> Cursor:
         return self.cursor().execute(operation, parameters)
 
-    def executescript(self, script: SQLQuery):
-        """A lazy implementation of SQLite's `executescript`."""
-        return self.execute(script)
-
     def executemany(
         self, operation: SQLQuery, seq_of_parameters: Sequence[QueryParameters]
     ) -> Cursor:
         return self.cursor().executemany(operation, seq_of_parameters)
+
+    def executescript(self, script: SQLQuery) -> Cursor:
+        """A lazy implementation of SQLite's `executescript`."""
+        return self.execute(script)

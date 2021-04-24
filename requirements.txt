@@ -1,1 +1,2 @@
 duckdb==0.2.5
+git+https://github.com/thesketh/pep249

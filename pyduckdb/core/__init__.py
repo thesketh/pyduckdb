@@ -6,17 +6,7 @@ This is mostly the concrete implementation of the DB 2.0 API.
 """
 from .connection import Connection
 from .cursor import Cursor
-from .exceptions import (
-    DatabaseError,
-    DataError,
-    Error,
-    InterfaceError,
-    IntegrityError,
-    InternalError,
-    NotSupportedError,
-    OperationalError,
-    ProgrammingError,
-)
+from .exceptions import *
 
 __all__ = [
     "Connection",
