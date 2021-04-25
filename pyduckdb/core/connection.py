@@ -14,8 +14,8 @@ from pep249 import (
     ProcArgs,
 )
 from .cursor import Cursor
-from .exceptions import InterfaceError, ProgrammingError, convert_runtime_errors
-from .utils import raise_if_closed
+from .exceptions import InterfaceError, convert_runtime_errors
+from .utils import raise_if_closed, ignore_transaction_error
 
 __all__ = ["Connection"]
 
@@ -59,6 +59,7 @@ class Connection(
         self._connection.commit()
 
     @raise_if_closed
+    @ignore_transaction_error
     @convert_runtime_errors
     def rollback(self) -> None:
         self._connection.rollback()
@@ -71,11 +72,7 @@ class Connection(
 
         try:
             # Rolling back unstaged commits.
-            try:
-                self.rollback()
-            except ProgrammingError as err:
-                if not str(err).endswith("no transaction is active"):
-                    raise
+            self.rollback()
             # Close the underlying DuckDB connection.
             self._connection.close()
         except ImportError:  # Underlying connection garbage collected.

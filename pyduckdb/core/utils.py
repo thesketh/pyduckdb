@@ -1,8 +1,8 @@
 """Some useful utility pieces."""
 from functools import wraps
-from typing import Callable
+from typing import Callable, Optional
 from .types import ReturnType
-from .exceptions import CONNECTION_CLOSED
+from .exceptions import CONNECTION_CLOSED, ProgrammingError
 
 __all__ = ["raise_if_closed"]
 
@@ -20,5 +20,27 @@ def raise_if_closed(method: Callable[..., ReturnType]) -> Callable[..., ReturnTy
         if self._closed:  # pylint: disable=protected-access
             raise CONNECTION_CLOSED
         return method(self, *args, **kwargs)
+
+    return wrapped
+
+
+def ignore_transaction_error(
+    method: Callable[..., ReturnType]
+) -> Callable[..., Optional[ReturnType]]:
+    """
+    Ignore transaction errors, returning `None` instead. Useful for
+    `rollback`.
+
+    """
+
+    @wraps(method)
+    def wrapped(*args, **kwargs):
+        """Ignore transaction errors, returning `None` instead."""
+        try:
+            return method(*args, **kwargs)
+        except (ProgrammingError, RuntimeError) as err:
+            if str(err).endswith("no transaction is active"):
+                return None
+            raise
 
     return wrapped

@@ -28,6 +28,6 @@ setuptools.setup(
     python_requires=">=3.7",
     install_requires=[
         "duckdb==0.2.5",
-        "pep249==0.0.1b1"
+        "pep249==0.0.1b2"
     ]
 )

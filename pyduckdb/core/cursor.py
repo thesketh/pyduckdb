@@ -17,11 +17,10 @@ from pep249 import (
     ResultSet,
 )
 from .exceptions import (
-    ProgrammingError,
     NotSupportedError,
     convert_runtime_errors,
 )
-from .utils import raise_if_closed
+from .utils import raise_if_closed, ignore_transaction_error
 
 if TYPE_CHECKING:
     # pylint: disable=cyclic-import
@@ -83,6 +82,7 @@ class Cursor(
         self._cursor.commit()
 
     @raise_if_closed
+    @ignore_transaction_error
     @convert_runtime_errors
     def rollback(self) -> None:
         self._cursor.rollback()
@@ -95,11 +95,7 @@ class Cursor(
 
         try:
             # Rolling back unstaged commits.
-            try:
-                self.rollback()
-            except ProgrammingError as err:
-                if not str(err).endswith("no transaction is active"):
-                    raise
+            self.rollback()
             # Close the underlying DuckDB connection.
             self._cursor.close()
         except ImportError:  # Underlying connection garbage collected.
