@@ -33,7 +33,6 @@ from pyduckdb.aiopyduckdb import connect
 async def main():
     async with connect(":memory:") as connection:
         async with await connection.execute("SELECT 1;") as cursor:
-            # __anext__ implemented, but next does not work on this.
             print(await cursor.fetchone())
 
 if __name__ == "__main__":

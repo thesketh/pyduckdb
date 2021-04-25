@@ -18,7 +18,7 @@ setuptools.setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.7",
         "Development Status :: 4 - Beta",
-        "Natural Language :: English"
+        "Natural Language :: English",
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",
         "Topic :: Software Development :: Libraries",
@@ -28,6 +28,6 @@ setuptools.setup(
     python_requires=">=3.7",
     install_requires=[
         "duckdb==0.2.5",
-        "pep249==0.0.1b2"
+        "pep249>=0.0.1b3"
     ]
 )
