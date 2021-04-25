@@ -1,7 +1,9 @@
 """
-Core functionality implemented by pyduckdb.
+Pure Python wrapper around DuckDB's pybind11 generated wrapper. This
+async implementation uses the sync implementation and asyncio.to_thread.
 
-This is mostly the concrete implementation of the DB 2.0 API.
+This API is intended to showcase the utility of the PEP 249 abstract
+base classes.
 
 """
 from pep249.type_constructors import *
