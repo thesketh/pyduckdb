@@ -10,6 +10,16 @@ This implementation provides Python type hints, context managers, and more disti
 DuckDB. This is not intended to be used in production, but as a test bed for some ideas and to demonstrate
 the abstract base classes.
 
+## Installation
+
+```
+python3 -mpip install pyduckdb
+```
+
+## Usage
+
+Uses the standard Python database API.
+
 ```python
 from pyduckdb import connect
 
@@ -44,3 +54,4 @@ Differences from the PEP:
  - `Connection`s implement the `execute*()` functions from the cursor, and return a cursor, as SQLite does.
  - `Connection`s and `Cursor`s implement `executescript()` as SQLite does.
  - `Cursor`s implement the same transactional features as their `Connection`s.
+ 
