@@ -20,6 +20,7 @@ from pyduckdb.core.exceptions import (
 )
 from .connection import AsyncConnection
 from .cursor import AsyncCursor
+from .. import __version__
 
 __all__ = [
     "apilevel",

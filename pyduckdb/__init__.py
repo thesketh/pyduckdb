@@ -38,7 +38,7 @@ __all__ = [
     "ProgrammingError",
 ]
 
-__version__ = "0.0.1b1"
+__version__ = "0.0.1b2"
 
 # pylint: disable=invalid-name
 apilevel = "2.0"
