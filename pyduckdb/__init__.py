@@ -5,8 +5,10 @@ This API is intended to eventually be a drop-in replacement for SQLite
 in most cases.
 
 """
+import os
+from typing import Union
 from pep249.type_constructors import *
-from pyduckdb.core import *
+from .core import *
 
 __all__ = [
     "apilevel",
@@ -46,6 +48,8 @@ threadsafety = 1
 paramstyle = "qmark"
 
 
-def connect(connection_string: str = ":memory:", read_only=False) -> Connection:
+def connect(
+    connection_string: Union[str, os.PathLike] = ":memory:", read_only: bool = False
+) -> Connection:
     """Connect to a DuckDB database, returning a connection."""
     return Connection(connection_string, read_only=read_only)

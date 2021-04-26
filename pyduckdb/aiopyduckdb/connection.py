@@ -2,6 +2,7 @@
 Async connection object for DuckDB which fits the DB API spec.
 
 """
+import os
 from typing import Optional, Union, Sequence
 from duckdb import DuckDBPyConnection  # pylint: disable=no-name-in-module
 from pep249 import aiopep249
@@ -33,11 +34,11 @@ class AsyncConnection(aiopep249.AsyncCursorExecuteMixin, aiopep249.AsyncConnecti
 
     def __init__(
         self,
-        database: Union[DuckDBPyConnection, Connection, str],
+        database: Union[DuckDBPyConnection, Connection, os.PathLike, str],
         *,
         read_only: Optional[bool] = None
     ):
-        if isinstance(database, (str, DuckDBPyConnection)):
+        if isinstance(database, (str, os.PathLike, DuckDBPyConnection)):
             self._connection = Connection(database, read_only=read_only)
         else:
             if read_only is not None:

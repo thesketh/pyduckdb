@@ -98,7 +98,7 @@ class Cursor(
             self.rollback()
             # Close the underlying DuckDB connection.
             self._cursor.close()
-        except ImportError:  # Underlying connection garbage collected.
+        except (ImportError, TypeError):  # Underlying connection garbage collected.
             pass
         self._closed = True
 
@@ -128,6 +128,9 @@ class Cursor(
         if parameters is None:
             self._cursor.execute(operation)
         else:
+            # if not isinstance(parameters, Sequence):
+            #     param_type = type(parameters).__name__
+            #     raise TypeError(f"`parameters`: expected sequence, got {param_type}.")
             self._cursor.execute(operation, parameters)
         return self
 

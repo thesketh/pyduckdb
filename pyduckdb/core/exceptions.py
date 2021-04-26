@@ -7,7 +7,7 @@ implicitly by wrapping functions.
 
 """
 # pylint: disable=missing-class-docstring
-from functools import wraps
+from functools import wraps, lru_cache
 from typing import Callable
 from pep249 import (
     DatabaseError,
@@ -39,19 +39,24 @@ __all__ = [
 
 CONNECTION_CLOSED = ProgrammingError("Cannot operate on a closed connection.")
 
-INTEGRITY_ERRORS = ("Constraint Error",)
-PROGRAMMING_ERRORS = (
+INTEGRITY_ERRORS = {
+    "Constraint Error",
+}
+PROGRAMMING_ERRORS = {
     "Parser Error",
     "Binder Error",
     "Catalog Error",
     "TransactionContext Error",
-)
-DATA_ERRORS = ("Invalid Input Error", "Out of Range Error")
-INTERNAL_ERRORS = ()
-OPERATIONAL_ERRORS = ()
-NOT_SUPPORTED_ERRORS = ()
+}
+DATA_ERRORS = {"Invalid Input Error", "Out of Range Error"}
+INTERNAL_ERRORS = set()
+OPERATIONAL_ERRORS = {
+    "IO Error",
+}
+NOT_SUPPORTED_ERRORS = set()
 
 
+@lru_cache(maxsize=None)
 def _parse_runtime_error(error: RuntimeError) -> DatabaseError:
     """
     Parse a runtime error straight from DuckDB and return a more
@@ -81,7 +86,8 @@ def _parse_runtime_error(error: RuntimeError) -> DatabaseError:
     elif error_type in NOT_SUPPORTED_ERRORS:
         new_error_type = NotSupportedError
 
-    if "read-only mode" in error_type:
+    # Parsing messages.
+    if "read-only mode" in error_type or "Prepared statement needs" in error_type:
         new_error_type = ProgrammingError
         error_message = error_type
 

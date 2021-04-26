@@ -3,6 +3,7 @@ Connection object for DuckDB which fits the DB API spec.
 
 """
 # pylint: disable=c-extension-no-member
+import os
 from typing import Optional, Sequence, Union
 import duckdb
 from duckdb import DuckDBPyConnection  # pylint: disable=no-name-in-module
@@ -39,7 +40,7 @@ class Connection(
 
     def __init__(
         self,
-        database: Union[DuckDBPyConnection, str],
+        database: Union[DuckDBPyConnection, os.PathLike, str],
         *,
         read_only: Optional[bool] = None
     ):
@@ -50,7 +51,11 @@ class Connection(
                 )
             self._connection = database
         else:
+
+            if isinstance(database, os.PathLike):
+                database = os.fspath(database)
             self._connection = duckdb.connect(database, bool(read_only))
+
         self._closed = False
 
     @raise_if_closed
@@ -75,7 +80,7 @@ class Connection(
             self.rollback()
             # Close the underlying DuckDB connection.
             self._connection.close()
-        except ImportError:  # Underlying connection garbage collected.
+        except (ImportError, TypeError):  # Underlying connection garbage collected.
             pass
         self._closed = True
 

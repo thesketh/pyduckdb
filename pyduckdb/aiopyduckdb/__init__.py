@@ -6,6 +6,8 @@ This API is intended to showcase the utility of the PEP 249 abstract
 base classes.
 
 """
+import os
+from typing import Union
 from pep249.type_constructors import *
 from pyduckdb.core.exceptions import (
     DatabaseError,
@@ -58,6 +60,8 @@ threadsafety = 1
 paramstyle = "qmark"
 
 
-def connect(connection_string: str = ":memory:", read_only=False) -> AsyncConnection:
+def connect(
+    connection_string: Union[str, os.PathLike] = ":memory:", read_only: bool = False
+) -> AsyncConnection:
     """Connect to a DuckDB database, returning an async connection."""
     return AsyncConnection(connection_string, read_only=read_only)
